@@ -3,6 +3,7 @@
 #include <iomanip>
 
 int main() {
+    enableEscapeSequences();
     UTXOManager manager;
     Mempool mempool;
     std::vector<Block> blockchain;
