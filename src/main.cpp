@@ -2,6 +2,7 @@
 #include "utils.hpp"
 
 int main() {
+    enableEscapeSequences();
     UTXOManager manager;
     Mempool mempool;
     std::vector<Block> blockchain;

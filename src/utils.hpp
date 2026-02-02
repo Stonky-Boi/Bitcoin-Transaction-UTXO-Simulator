@@ -3,14 +3,32 @@
 #include <iostream>
 #include "defs.cpp"
 
-void waitForEnter() {
+#if __has_include(<windows.h>)
+#include <windows.h>
+#include <conio.h>
+int enableEscapeSequences() {
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (hOut == INVALID_HANDLE_VALUE) return GetLastError();
+    DWORD dwMode = 0;
+    if (!GetConsoleMode(hOut, &dwMode)) return GetLastError();
+    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+    if (!SetConsoleMode(hOut, dwMode)) return GetLastError();
+    return 0;
+}
+#else
+inline int enableEscapeSequences() {
+    return 0;
+}
+#endif
+
+inline void waitForEnter() {
     std::cout << "\n" << CYAN << "Press Enter to continue..." << RESET;
     std::cin.ignore();
     std::cin.get();
 }
 
-void clearScreen() {
-    #ifdef _WIN32
+inline void clearScreen() {
+    #if __has_include(<windows.h>)
         system("cls");
     #else
         // system("clear");
@@ -18,7 +36,7 @@ void clearScreen() {
     #endif
 }
 
-void printHeader(int blockHeight, int mempoolSize, int utxoCount) {
+inline void printHeader(int blockHeight, int mempoolSize, int utxoCount) {
     clearScreen();
     std::cout << BLUE << BOLD << "============================================" << RESET << std::endl;
     std::cout << BLUE << BOLD << "      BITCOIN TRANSACTION SIMULATOR         " << RESET << std::endl;
