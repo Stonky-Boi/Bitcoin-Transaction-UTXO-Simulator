@@ -1,5 +1,6 @@
 #include "mining.cpp"
 #include "utils.hpp"
+#include <iomanip>
 
 int main() {
     UTXOManager manager;
@@ -68,15 +69,51 @@ int main() {
                 }
             }
         } else if (choice==2) {
-            std::cout << BOLD << "Current UTXO Set:" << RESET << std::endl;
-            bool empty = true;
-            for (auto const& [id,vec]:manager.utxo_set) {
-                for (auto& u:vec) {
-                    std::cout << " - " << CYAN << u.owner << RESET << ": " << YELLOW << u.value << " BTC" << RESET << " (" << u.id << ")" << std::endl;
-                    empty = false;
+            std::cout << BOLD << "View UTXO Options:" << RESET << std::endl;
+            std::cout << " " << CYAN << "1." << RESET << " Sort by Owner (A-Z)\n";
+            std::cout << " " << CYAN << "2." << RESET << " Sort by Amount (High-Low)\n";
+            std::cout << " " << CYAN << "3." << RESET << " Default (By Transaction ID)\n";
+            std::cout << "Choice: ";
+            
+            int sortChoice;
+            std::cin >> sortChoice;
+
+            std::cout << "\n" << BOLD << "Current UTXO Set:" << RESET << std::endl;
+
+            if (sortChoice == 3 || (sortChoice != 1 && sortChoice != 2)) {
+                // Default Map View
+                bool empty = true;
+                for (auto const& [id,vec]:manager.utxo_set) {
+                    for (auto& u:vec) {
+                        std::cout << " - " << CYAN << u.owner << RESET << ": " << YELLOW << u.value << " BTC" << RESET 
+                                  << " (Tx: " << u.parent_tx_id << ")" << std::endl;
+                        empty = false;
+                    }
+                }
+                if(empty) std::cout << " (Empty)" << std::endl;
+            } else {
+                // Sorted Vector View
+                std::vector<UTXO> all = manager.getAllUTXOs();
+                if (all.empty()) {
+                     std::cout << " (Empty)" << std::endl;
+                } else {
+                    if (sortChoice == 1) {
+                        std::sort(all.begin(), all.end(), [](const UTXO& a, const UTXO& b){
+                            return a.owner < b.owner;
+                        });
+                    } else if (sortChoice == 2) {
+                        std::sort(all.begin(), all.end(), [](const UTXO& a, const UTXO& b){
+                            return a.value > b.value;
+                        });
+                    }
+                    
+                    for(const auto& u : all) {
+                         std::cout << " - " << CYAN << std::setw(10) << std::left << u.owner << RESET 
+                                   << ": " << YELLOW << std::setw(10) << u.value << " BTC" << RESET 
+                                   << " | " << u.id << std::endl;
+                    }
                 }
             }
-            if(empty) std::cout << " (Empty)" << std::endl;
 
         } else if (choice==3) {
             std::cout << BOLD << "Mempool Transactions:" << RESET << std::endl;

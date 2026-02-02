@@ -44,6 +44,15 @@ public:
         }
         return {};
     }
+		
+		std::vector<UTXO> getAllUTXOs() {
+        std::vector<UTXO> all;
+        for (auto const& [tx_id, vec] : utxo_set) {
+            all.insert(all.end(), vec.begin(), vec.end());
+        }
+        return all;
+    }
+
     std::vector<UTXO> getAllUTXOofOwner(const std::string& owner) {
         std::vector<UTXO> res;
         for (auto const& [tx_id,v]:utxo_set) {
