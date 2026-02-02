@@ -1,3 +1,4 @@
+#pragma once
 #include <cstdint>
 #include <map>
 #include <set>
@@ -7,6 +8,15 @@
 #include <algorithm>
 #include <iostream>
 #include <ctime>
+
+const std::string RESET   = "\033[0m";
+const std::string RED     = "\033[31m";
+const std::string GREEN   = "\033[32m";
+const std::string YELLOW  = "\033[33m";
+const std::string BLUE    = "\033[34m";
+const std::string MAGENTA = "\033[35m";
+const std::string CYAN    = "\033[36m";
+const std::string BOLD    = "\033[1m";
 
 struct UTXO {
     std::string id;
@@ -32,6 +42,16 @@ struct Transaction {
     bool is_valid=false;
 };
 
+struct Block {
+    int height;
+    std::string hash; // Simplified hash (ID)
+    std::string prev_hash;
+    std::string miner;
+    std::vector<Transaction> transactions;
+    double total_fees;
+    std::time_t timestamp;
+};
+
 std::string genUniqueUTXOID() {
     static int64_t id=0;
     return "UTXO_"+std::to_string(id++);
@@ -40,4 +60,13 @@ std::string genUniqueUTXOID() {
 std::string genUniqueTransactionID() {
     static int64_t id=0;
     return "TX_"+std::to_string(id++);
+}
+
+std::string genBlockHash(int a) {
+    std::string chars = "0123456789abcdef";
+    std::string result = "0000"; // Typical mock-bitcoin prefix
+    for(int i = 0; i < 16; ++i) {
+        result += chars[rand() % chars.length()];
+    }
+    return result;
 }

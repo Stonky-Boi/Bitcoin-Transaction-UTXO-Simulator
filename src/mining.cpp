@@ -1,3 +1,4 @@
+#pragma once
 #include "utxo.cpp"
 class Mempool {
 public:
@@ -27,13 +28,20 @@ public:
     }
 };
 
-void mine_block(std::string miner_address,Mempool& mempool,UTXOManager& manager) {
-    if (mempool.transactions.empty()) return;
+void mine_block(std::string miner_address, Mempool& mempool, UTXOManager& manager, std::vector<Block>& blockchain) {
+    if (mempool.transactions.empty()) {
+        std::cout << YELLOW << "Mempool is empty. No transactions to mine." << RESET << std::endl;
+        return;
+    }
+
     std::sort(mempool.transactions.begin(),mempool.transactions.end(),[](const Transaction& a,const Transaction& b) {
         return a.fee>b.fee;
     });
+
     double total_fees=0;
     std::set<std::string> block_spent_ids;
+    std::vector<Transaction> valid_txs;
+
     for (auto& tx:mempool.transactions) {
         bool can_mine=true;
         for (auto& in:tx.inputs) {
@@ -51,11 +59,25 @@ void mine_block(std::string miner_address,Mempool& mempool,UTXOManager& manager)
                 manager.generateUTXO(tx.tx_id,i,tx.outputs[i].value,tx.outputs[i].owner);
             }
             total_fees+=tx.fee;
+            valid_txs.push_back(tx);
         } else {
-            std::cout<<"TX "<<tx.tx_id<<" rejected (UTXO spent)"<<std::endl;
+            std::cout << RED << "TX "<<tx.tx_id<<" rejected (UTXO spent)" << RESET << std::endl;
         }
     }
+
+    Block newBlock;
+    newBlock.height = blockchain.size() + 1;
+    newBlock.miner = miner_address;
+    newBlock.transactions = valid_txs;
+    newBlock.total_fees = total_fees;
+    newBlock.timestamp = std::time(nullptr);
+    newBlock.prev_hash = (blockchain.empty()) ? "0000000000" : blockchain.back().hash;
+    newBlock.hash = genBlockHash(newBlock.height);
+
     manager.generateUTXO(genUniqueUTXOID(),0,total_fees,miner_address);
+    
+    blockchain.push_back(newBlock);
     mempool.transactions.clear();
-    std::cout<<"Block mined! Miner "<<miner_address<<" earned "<<total_fees<<" BTC"<<std::endl;
+    
+    std::cout << GREEN << BOLD << "Block mined! Miner "<<miner_address<<" earned "<<total_fees<<" BTC" << RESET << std::endl;
 }
