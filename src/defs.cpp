@@ -10,12 +10,12 @@
 #include <ctime>
 
 const std::string RESET   = "\033[0m";
-const std::string RED     = "\033[31m";
-const std::string GREEN   = "\033[32m";
-const std::string YELLOW  = "\033[33m";
-const std::string BLUE    = "\033[34m";
-const std::string MAGENTA = "\033[35m";
-const std::string CYAN    = "\033[36m";
+const std::string RED     = "\033[38;5;196m";
+const std::string GREEN   = "\033[38;5;46m";
+const std::string YELLOW  = "\033[38;5;226m";
+const std::string BLUE    = "\033[38;5;39m";
+const std::string MAGENTA = "\033[38;5;201m"; 
+const std::string CYAN    = "\033[38;5;51m";
 const std::string BOLD    = "\033[1m";
 
 struct UTXO {
