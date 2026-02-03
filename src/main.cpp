@@ -40,33 +40,26 @@ int main() {
         if (choice==6) break;
 
         std::cout << "\n--------------------------------------------\n";
-
-        if (choice==1) {
-            std::string s,r; double a;
+        if (choice == 1) {
+            std::string s, r; double a;
             std::cout << "Sender: "; std::cin >> s;
             std::cout << "Recipient: "; std::cin >> r;
             std::cout << "Amount: "; std::cin >> a;
             
-            std::vector<UTXO> owned=manager.getAllUTXOofOwner(s);
+            std::vector<UTXO> owned = manager.getAllUTXOofOwner(s);
+            
             if (owned.empty()) {
                 std::cout << RED << "Sender has no UTXOs!" << RESET << std::endl;
             } else {
-                Transaction tx;
-                tx.tx_id=genUniqueTransactionID();
-                double current=0;
-                for (auto& u:owned) {
-                    tx.inputs.push_back(u);
-                    current+=u.value;
-                    if (current>=a+0.001) break;
-                }
-                if (current>=a+0.001) {
-                    tx.outputs.push_back({genUniqueUTXOID(),tx.tx_id,r,a});
-                    tx.outputs.push_back({genUniqueUTXOID(),tx.tx_id,s,current-a-0.001});
-                    auto res=mempool.add_transaction(tx,manager);
+                std::vector<ToPay> payments = {{s, r, a}};
+                Transaction tx(s, payments, owned);
+
+                if (tx.is_valid) {
+                    auto res = mempool.add_transaction(tx, manager);
                     if(res.first) std::cout << GREEN << res.second << RESET << std::endl;
-                    else std::cout << RED << "Error: " << res.second << RESET << std::endl;
+                    else std::cout << RED << "Mempool Error: " << res.second << RESET << std::endl;
                 } else {
-                    std::cout << RED << "Insufficient funds" << RESET << std::endl;
+                    std::cout << RED << "Error: Insufficient funds" << RESET << std::endl;
                 }
             }
         } else if (choice==2) {
