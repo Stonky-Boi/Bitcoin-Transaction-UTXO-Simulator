@@ -1,6 +1,9 @@
 # Bitcoin Transaction UTXO Simulator
 
 A comprehensive educational simulator for understanding Bitcoin's Unspent Transaction Output (UTXO) model and blockchain mechanics. This project provides an interactive, command-line interface to demonstrate how transactions are created, validated, and confirmed through mining.
+<div align=center>
+<img width="453" alt="image" src="https://github.com/user-attachments/assets/48d10b73-a5d7-43f6-ab8a-ec6473062335" />
+</div>
 
 ## Overview
 
