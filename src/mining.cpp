@@ -1,5 +1,6 @@
 #pragma once
 #include "utxo.cpp"
+#include <iostream>
 class Mempool {
 public:
     std::vector<Transaction> transactions;
@@ -75,7 +76,6 @@ void mine_block(std::string miner_address, Mempool& mempool, UTXOManager& manage
     newBlock.hash = genBlockHash(newBlock.height);
 
     manager.generateUTXO(genUniqueUTXOID(),0,total_fees,miner_address);
-    
     blockchain.push_back(newBlock);
     mempool.transactions.clear();
     

@@ -3,6 +3,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 #include <algorithm>
@@ -33,25 +34,6 @@ bool operator==(const UTXO& u1,const UTXO& u2) {
         u1.value==u2.value
     );
 }
-
-struct Transaction {
-    std::string tx_id;
-    std::vector<UTXO> inputs;
-    std::vector<UTXO> outputs;
-    double fee;
-    bool is_valid=false;
-};
-
-struct Block {
-    int height;
-    std::string hash; // Simplified hash (ID)
-    std::string prev_hash;
-    std::string miner;
-    std::vector<Transaction> transactions;
-    double total_fees;
-    std::time_t timestamp;
-};
-
 std::string genUniqueUTXOID() {
     static int64_t id=0;
     return "UTXO_"+std::to_string(id++);
@@ -64,9 +46,67 @@ std::string genUniqueTransactionID() {
 
 std::string genBlockHash(int a) {
     std::string chars = "0123456789abcdef";
-    std::string result = "0000"; // Typical mock-bitcoin prefix
+    std::string result = "0000";
     for(int i = 0; i < 16; ++i) {
         result += chars[rand() % chars.length()];
     }
     return result;
 }
+struct ToPay {
+    std::string payer;
+    std::string payee;
+    double amount;
+};
+struct Transaction {
+    std::string tx_id;
+    std::vector<UTXO> inputs;
+    std::vector<UTXO> outputs;
+    double fee;
+    bool is_valid = false;
+    Transaction() : fee(0), is_valid(false) {}
+    Transaction(const std::string& sender, const std::vector<ToPay>& payments, 
+                const std::vector<UTXO>& available_utxos) {
+        
+        tx_id = genUniqueTransactionID();
+        double total_to_pay = 0;
+        for (const auto& p : payments) total_to_pay += p.amount;
+
+        double current_input_sum = 0;
+        const double fee_per_input = 0.001;
+        
+        for (const auto& u : available_utxos) {
+            inputs.push_back(u);
+            current_input_sum += u.value;
+            
+            fee = inputs.size() * fee_per_input;
+            
+            if (current_input_sum >= total_to_pay + fee) break;
+        }
+
+        if (current_input_sum < total_to_pay + fee) {
+            is_valid = false;
+            return;
+        }
+
+        for (const auto& p : payments) {
+            outputs.push_back({genUniqueUTXOID(), tx_id, p.payee, p.amount});
+        }
+
+        double change = current_input_sum - total_to_pay - fee;
+        if (change > 0) {
+            outputs.push_back({genUniqueUTXOID(), tx_id, sender, change});
+        }
+
+        is_valid = true;
+    }
+};
+
+struct Block {
+    int height;
+    std::string hash; // Simplified hash (ID)
+    std::string prev_hash;
+    std::string miner;
+    std::vector<Transaction> transactions;
+    double total_fees;
+    std::time_t timestamp;
+};
