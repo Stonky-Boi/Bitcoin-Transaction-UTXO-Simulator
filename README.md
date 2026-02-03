@@ -110,6 +110,25 @@ make clean
 
 6. **Review Blockchain History**: Select option 5 to view all confirmed blocks and their contents
 
+## Running Tests
+
+The simulator includes a test suite (`src/test_cases.cpp`) that validates transaction logic, double-spend protection, and mining mechanics. For a detailed breakdown of the scenarios covered, see [TEST_CASES.md](TEST_CASES.md).
+
+To run the tests using Make:
+```bash
+make test
+```
+
+Or compile and run the tests:
+
+```bash
+# Compile the test suite
+g++ -std=c++17 src/test_cases.cpp -o build/test_cases
+
+# Run the tests
+./build/test_cases
+```
+
 ## Technical Details
 
 ### Transaction Model

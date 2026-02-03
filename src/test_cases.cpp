@@ -233,7 +233,7 @@ bool test_race_attack() {
     }
 
     // Mine and verify TX1 is in block
-    mine_block("Miner", state.mempool, state.manager, state.blockchain);
+    mine_block("Crypto", state.mempool, state.manager, state.blockchain);
     
     bool lowMined = false;
     for(auto& tx : state.blockchain[0].transactions) {
@@ -254,13 +254,13 @@ bool test_complete_mining_flow() {
     Transaction tx("Alice", {{"Alice", "Bob", 10.0}}, aliceUTXOs);
     state.mempool.add_transaction(tx, state.manager); 
     
-    mine_block("Miner1", state.mempool, state.manager, state.blockchain);
+    mine_block("Hasher", state.mempool, state.manager, state.blockchain);
     
     ASSERT_EQ((double)state.blockchain.size(), 1.0, "Blockchain height should be 1");
     ASSERT_EQ((double)state.mempool.transactions.size(), 0.0, "Mempool should be empty");
     
     // Miner earns fee (0.001)
-    ASSERT_EQ(state.manager.getBalance("Miner1"), 0.001, "Miner didn't receive correct fees");
+    ASSERT_EQ(state.manager.getBalance("Hasher"), 0.001, "Miner didn't receive correct fees");
     
     std::cout << GREEN << " [PASS]" << RESET << std::endl;
     return true;

@@ -107,15 +107,15 @@ This document details the 10 mandatory test cases used to validate the integrity
     * **Mining Result:** Block contains TX1. Miner earns 0.001 BTC (not 0.1).
 
 ### 9. Complete Mining Flow
-* **Input:** Mempool contains 1 valid transaction (Fee 0.001). "Miner1" mines the block.
+* **Input:** Mempool contains 1 valid transaction (Fee 0.001). "Hasher" mines the block.
 * **What's Going On:**
     1. Block created with height `N+1`.
     2. Transaction inputs removed from UTXO set (consumed).
     3. Transaction outputs added to UTXO set (generated).
-    4. **Coinbase TX:** Miner1 receives the block reward + fees (0.001).
+    4. **Coinbase TX:** Hasher receives the block reward + fees (0.001).
     5. Mempool cleared.
 * **Output:**
-    * `Block mined! Miner Miner1 earned 0.001 BTC`
+    * `Block mined! Miner Hasher earned 0.001 BTC`
     * Blockchain height increases.
     * Miner balance increases.
 

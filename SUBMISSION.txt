@@ -1,0 +1,7 @@
+GitHub Repository : https://github.com/Stonky-Boi/Bitcoin-Transaction-UTXO-Simulator.git
+Team Name : BitBoyz
+Team Members :
+1. Arnav Kumar            - 240001013
+2. Aryaman Awanish Tiwari - 240001014
+3. Ayush Singh Rana       - 240001015
+4. Hrishabh Mittal        - 240001035
