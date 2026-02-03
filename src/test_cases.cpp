@@ -217,16 +217,20 @@ bool test_complete_mining_flow() {
     std::vector<UTXO> aliceUTXOs = state.manager.getAllUTXOofOwner("Alice");
     Transaction tx;
     tx.tx_id = "TX_MINE";
-    tx.inputs.push_back(aliceUTXOs[0]);
+    tx.inputs.push_back(aliceUTXOs[0]); // Input: 50.0 BTC
+    
+    // Output 1: Payment to Bob
     tx.outputs.push_back({genUniqueUTXOID(), "TX_MINE", "Bob", 10.0});
+    // Output 2: Change back to Alice (50.0 - 10.0 - 0.001 Fee = 39.999)
+    tx.outputs.push_back({genUniqueUTXOID(), "TX_MINE", "Alice", 39.999});
+    
     state.mempool.add_transaction(tx, state.manager); 
-    
     mine_block("Miner1", state.mempool, state.manager, state.blockchain);
-    
     ASSERT_EQ((double)state.blockchain.size(), 1.0, "Blockchain height should be 1");
     ASSERT_EQ((double)state.mempool.transactions.size(), 0.0, "Mempool should be empty");
-    ASSERT_EQ(state.manager.getBalance("Miner1"), 40.0, "Miner didn't receive correct fees");
-    
+
+    // Miner should now earn exactly 0.001 BTC
+    ASSERT_EQ(state.manager.getBalance("Miner1"), 0.001, "Miner didn't receive correct fees");
     std::cout << GREEN << " [PASS]" << RESET << std::endl;
     return true;
 }
