@@ -12,6 +12,16 @@ public:
         for (auto& in:tx.inputs) {
             if (!manager.exists(in)) return {false,"Input UTXO does not exist"};
             if (local_inputs.count(in.id)) return {false,"Double-spend in same TX"};
+
+            //checking mempool for repeated UTXO being spent in another transaction 
+            for (const auto& existing_tx : transactions) {
+                for (const auto& existing_in : existing_tx.inputs) {
+                    if (existing_in.id == in.id) {
+                        return {false, "Double-spend: Input already pending in mempool"};
+                    }
+                }
+            }
+
             local_inputs.insert(in.id);
             total_in+=in.value;
         }
