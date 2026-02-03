@@ -13,52 +13,6 @@ This simulator allows users to:
 - Mine blocks and extend the blockchain
 - Explore transaction validation and fee mechanisms
 
-## Features
-
-### Core Functionality
-
-- **Transaction Management**: Create transactions by specifying senders, recipients, and amounts with automatic change management
-- **UTXO Set Tracking**: Maintain and display the current set of unspent outputs with flexible sorting options:
-  - Sort by owner (alphabetical)
-  - Sort by amount (descending)
-  - Default view by transaction ID
-- **Mempool Simulation**: Queue transactions before they're included in mined blocks
-- **Mining System**: Simulate mining blocks with transaction inclusion and fee collection
-- **Blockchain History**: View all mined blocks and their transactions
-
-### User Interface
-
-- Color-coded terminal output for easy navigation
-- Real-time status display showing block height, mempool size, and UTXO count
-- Interactive menu-driven interface
-- Cross-platform support (Windows and Unix-based systems)
-
-## Architecture
-
-### Component Structure
-
-- **defs.cpp**: Core data structures and definitions
-  - `UTXO`: Represents an unspent transaction output
-  - `Transaction`: Contains inputs (consumed UTXOs) and outputs (new UTXOs)
-  - `Block`: Represents a mined block in the blockchain
-  - Utility functions for ID generation and hashing
-
-- **utxo.cpp**: UTXO management
-  - `UTXOManager`: Manages the UTXO set, validates existence, tracks balances
-  - Operations: generate, consume, query, and aggregate UTXOs
-
-- **mining.cpp**: Mining and mempool logic
-  - Block mining mechanics
-  - Transaction validation
-  - Fee calculation
-
-- **utils.hpp**: Utility functions and display helpers
-  - Terminal rendering and formatting
-  - Cross-platform compatibility utilities
-  - Color-coded output management
-
-- **main.cpp**: Application entry point and interactive CLI
-
 ## Building and Running
 
 ### Prerequisites
@@ -129,6 +83,54 @@ g++ -std=c++17 src/test_cases.cpp -o build/test_cases
 ./build/test_cases
 ```
 
+## Features
+
+### Core Functionality
+
+- **Transaction Management**: Create transactions by specifying senders, recipients, and amounts with automatic change management
+- **UTXO Set Tracking**: Maintain and display the current set of unspent outputs with flexible sorting options:
+  - Sort by owner (alphabetical)
+  - Sort by amount (descending)
+  - Default view by transaction ID
+- **Mempool Simulation**: Queue transactions before they're included in mined blocks
+- **Mining System**: Simulate mining blocks with transaction inclusion and fee collection
+- **Blockchain History**: View all mined blocks and their transactions
+
+### User Interface
+
+- Color-coded terminal output for easy navigation
+- Real-time status display showing block height, mempool size, and UTXO count
+- Interactive menu-driven interface
+- Cross-platform support (Windows and Unix-based systems)
+
+## Architecture
+
+### Component Structure
+
+- **defs.cpp**: Core data structures and definitions
+  - `UTXO`: Represents an unspent transaction output
+  - `Transaction`: Contains inputs (consumed UTXOs) and outputs (new UTXOs)
+  - `Block`: Represents a mined block in the blockchain
+  - Utility functions for ID generation and hashing
+
+- **utxo.cpp**: UTXO management
+  - `UTXOManager`: Manages the UTXO set, validates existence, tracks balances
+  - Operations: generate, consume, query, and aggregate UTXOs
+
+- **mining.cpp**: Mining and mempool logic
+  - Block mining mechanics
+  - Transaction validation
+  - Fee calculation
+
+- **utils.hpp**: Utility functions and display helpers
+  - Terminal rendering and formatting
+  - Cross-platform compatibility utilities
+  - Color-coded output management
+
+- **main.cpp**: Application entry point and interactive CLI
+
+
+
 ## Technical Details
 
 ### Transaction Model
@@ -152,13 +154,3 @@ This structure enables efficient lookup and consumption of UTXOs.
 - Miners select transactions from the mempool and include them in a new block
 - Transaction validation occurs during mining (checking input/output validity)
 - Miner collects fees from all transactions in the block
-
-## Educational Value
-
-This simulator is designed for:
-- **Learning**: Understanding UTXO mechanics without dealing with actual Bitcoin complexity
-- **Development**: Prototyping transaction logic for Bitcoin-based applications
-- **Teaching**: Demonstrating blockchain concepts in classroom settings
-- **Research**: Experimenting with transaction patterns and fee mechanisms
-
-This is an educational project created for learning purposes. It is a simplified simulation of Bitcoin's transaction model and should not be used for any production or financial purposes.
